@@ -4,6 +4,7 @@ namespace LaravelGoogleAds\Services;
 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSession;
+use Google\AdsApi\AdWords\ReportSettingsBuilder;
 use Google\AdsApi\Common\AdsSoapClient;
 use Google\AdsApi\Common\Configuration;
 use Google\AdsApi\Common\OAuth2TokenBuilder;
@@ -42,6 +43,27 @@ class AdWordsService
             ->build());
     }
 
+    /**
+     * Create a new session with report settings
+     *
+     * @param string $clientCustomerId
+     * @param array $reportOptions
+     * @return AdWordsSession|mixed
+     */
+    public function sessionWithReportSettings($clientCustomerId, $reportOptions)
+    {
+        $reportSettings = (new ReportSettingsBuilder())
+            ->skipReportHeader($reportOptions['skipReportHeader'])
+            ->skipReportSummary($reportOptions['skipReportSummary'])
+            ->includeZeroImpressions($reportOptions['includeZeroImpressions'])
+            ->build();
+
+        return ((new AdWordsSessionBuilder())
+            ->from($this->configuration($clientCustomerId))
+            ->withOAuth2Credential($this->oauth2Credentials($clientCustomerId))
+            ->withReportSettings($reportSettings)
+            ->build());
+    }
     /**
      * oAuth2 credentials
      * @param null|string $clientCustomerId
