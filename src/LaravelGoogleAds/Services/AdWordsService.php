@@ -47,6 +47,7 @@ class AdWordsService
         return ((new AdWordsSessionBuilder())
             ->from($this->configuration($clientCustomerId))
             ->withOAuth2Credential($credentials)
+            ->enablePartialFailure()
             ->build());
     }
 
@@ -69,6 +70,7 @@ class AdWordsService
             ->from($this->configuration($clientCustomerId))
             ->withOAuth2Credential($this->oauth2Credentials($clientCustomerId))
             ->withReportSettings($reportSettings)
+            ->enablePartialFailure()
             ->build());
     }
     /**
